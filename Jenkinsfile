@@ -22,7 +22,7 @@ node {
 		}
 
 		stage("Publish") {
-			dir("src\\Winton.DomainModelling.Abstractions.Tests\\bin") {
+			dir("src\\Winton.DomainModelling.Abstractions\\bin") {
 				bat("dotnet nuget push **\\*.nupkg --source https://packages/repository/nuget-hosted-libs/")
 			}
 		}
