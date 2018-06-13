@@ -5,7 +5,7 @@
     <Company>Winton</Company>
     <Copyright>Copyright 2018 Winton</Copyright>
     <Description>Provides common abstractions for domain modelling.</Description>
-    <GenerateDocumentationFile>False</GenerateDocumentationFile>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);SA0001;SA1101;SA1309;SA1413;SA1633;SA1652</NoWarn>
     <PackageId>Winton.DomainModelling.Abstractions</PackageId>
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
