@@ -12,13 +12,13 @@ node {
 		}
 
 		stage("Build") {
-			bat("\"${tool 'MSBuild15'}\" /p:Configuration=Release")
+			bat("\"${tool 'MSBuild15'}\" /p:Configuration=Release /p:GetVersion=True /p:WriteVersionInfoToBuildLog=True")
 		}
 
 		stage("Test") {
-			dir("test\\Winton.DomainModelling.Abstractions.Tests") {
-				bat("dotnet test Winton.DomainModelling.Abstractions.Tests.csproj --configuration Release --no-restore --no-build")
-			}
+			parallel [
+				"unit-tests": { test("Winton.DomainModelling.Abstractions.Tests") }
+			]
 		}
 
 		stage("Publish") {
@@ -39,5 +39,13 @@ node {
 	}
 	finally{
 		step([$class: 'StashNotifier'])
+	}
+}
+
+def test(testProjectName) {
+	dir("test") {
+		dir("${testProjectName}") {
+			bat("dotnet test --configuration Release --no-restore --no-build")
+		}
 	}
 }

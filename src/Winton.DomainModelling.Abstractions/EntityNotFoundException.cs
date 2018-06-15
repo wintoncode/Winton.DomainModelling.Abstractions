@@ -6,18 +6,25 @@ namespace Winton.DomainModelling
     /// <summary>
     ///     An error indicating that an entity could not be found.
     /// </summary>
-    /// <typeparam name="TEntity">The type of entity.</typeparam>
-    /// <typeparam name="TEntityId">The type of entity id.</typeparam>
-    public class EntityNotFoundException<TEntity, TEntityId> : DomainException
-        where TEntity : Entity<TEntityId>
-        where TEntityId : IEquatable<TEntityId>
+    public class EntityNotFoundException : DomainException
     {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="EntityNotFoundException{TEntity, TEntityId}" /> class.
-        /// </summary>
-        public EntityNotFoundException()
-            : base($"The specified {typeof(TEntity).Name} could not be found.")
+        private EntityNotFoundException(string message)
+            : base(message)
         {
+        }
+
+        /// <summary>
+        ///     Creates a new instance of the <see cref="EntityNotFoundException" /> class using the generic constraint to generate
+        ///     the message.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <typeparam name="TEntityId">The type of the entity id.</typeparam>
+        /// <returns>A new instance of <see cref="EntityNotFoundException" />.</returns>
+        public static EntityNotFoundException Create<TEntity, TEntityId>()
+            where TEntity : Entity<TEntityId>
+            where TEntityId : IEquatable<TEntityId>
+        {
+            return new EntityNotFoundException($"The specified {typeof(TEntity).Name} could not be found.");
         }
     }
 }
