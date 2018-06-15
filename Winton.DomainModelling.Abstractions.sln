@@ -7,9 +7,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{697902B3-26B
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{02075BDC-A66D-4346-8093-2F2667660F36}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Winton.DomainModelling.Abstractions", "src\Winton.DomainModelling.Abstractions\Winton.DomainModelling.Abstractions.csproj", "{4CC49F58-367B-4E87-8925-49D913FA7BD1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Winton.DomainModelling.Abstractions", "src\Winton.DomainModelling.Abstractions\Winton.DomainModelling.Abstractions.csproj", "{4CC49F58-367B-4E87-8925-49D913FA7BD1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Winton.DomainModelling.Abstractions.Tests", "test\Winton.DomainModelling.Abstractions.Tests\Winton.DomainModelling.Abstractions.Tests.csproj", "{8FD5A9B0-44ED-470F-A0F0-721E55B5790D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Winton.DomainModelling.Abstractions.Tests", "test\Winton.DomainModelling.Abstractions.Tests\Winton.DomainModelling.Abstractions.Tests.csproj", "{8FD5A9B0-44ED-470F-A0F0-721E55B5790D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
