@@ -3,8 +3,6 @@
         "https://raw.githubusercontent.com/DotNetAnalyzers/StyleCopAnalyzers/1.0.2/StyleCop.Analyzers/StyleCop.Analyzers/Settings/stylecop.schema.json",
     "settings": {
         "documentationRules": {
-            "documentExposedElements": false,
-            "documentInterfaces": false,
             "documentInternalElements": false,
             "xmlHeader": false
         },
