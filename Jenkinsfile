@@ -16,9 +16,10 @@ node {
 		}
 
 		stage("Test") {
-			parallel [
+			def tests = [
 				"unit-tests": { test("Winton.DomainModelling.Abstractions.Tests") }
 			]
+			parallel tests
 		}
 
 		stage("Publish") {
