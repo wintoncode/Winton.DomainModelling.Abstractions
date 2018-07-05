@@ -3,14 +3,14 @@
   <PropertyGroup>
     <GenerateDocumentationFile>False</GenerateDocumentationFile>
     <IsPackable>False</IsPackable>
-    <NoWarn>$(NoWarn)SA0001;SA1101;SA1309;SA1413;SA1633;SA1652</NoWarn>
+    <NoWarn>$(NoWarn);SA1652</NoWarn>
     <RootNamespace>Winton.DomainModelling</RootNamespace>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup>
-    <AdditionalFiles Include="..\..\stylecop.json" />
+    <AdditionalFiles Include="../../stylecop.json" />
   </ItemGroup>
 
   <ItemGroup>
