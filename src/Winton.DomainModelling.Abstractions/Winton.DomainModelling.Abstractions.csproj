@@ -7,11 +7,16 @@
     <Description>Provides common abstractions for domain modelling.</Description>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <GetVersion>False</GetVersion>
-    <NoWarn>$(NoWarn);SA0001;SA1101;SA1309;SA1413;SA1633;SA1652</NoWarn>
+    <NoWarn>$(NoWarn);SA1101</NoWarn>
     <PackageId>Winton.DomainModelling.Abstractions</PackageId>
+    <PackageIconUrl>https://raw.githubusercontent.com/wintoncode/Winton.DomainModelling.Abstractions/master/icon.jpg</PackageIconUrl>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/wintoncode/Winton.DomainModelling.Abstractions/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/wintoncode/Winton.DomainModelling.Abstractions</PackageProjectUrl>
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
     <PackageTags>Winton, Domain, Driven, Design, Modelling, Abstractions, DDD</PackageTags>
     <PackageVersion>$(NuGetVersion)</PackageVersion>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/wintoncode/Winton.DomainModelling.Abstractions</RepositoryUrl>
     <RootNamespace>Winton.DomainModelling</RootNamespace>
     <TargetFramework>netstandard1.0</TargetFramework>
     <Title>Winton Domain Modelling Abstractions</Title>
@@ -24,11 +29,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <AdditionalFiles Include="..\..\stylecop.json" />
+    <AdditionalFiles Include="../../stylecop.json" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Bt.Tooling.ReSharper" Version="1.3.0" PrivateAssets="All" />
     <PackageReference Include="GitVersionTask" Version="4.0.0-beta0012" PrivateAssets="All" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.0.2" PrivateAssets="All" />
   </ItemGroup>
