@@ -9,6 +9,7 @@ namespace Winton.DomainModelling
     /// <summary>
     ///     Represents domain errors.
     /// </summary>
+    [Obsolete("Prefer to return results with an Error instead.", false)]
     public class DomainException : Exception
     {
         /// <summary>
