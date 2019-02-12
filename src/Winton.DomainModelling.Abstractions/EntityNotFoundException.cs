@@ -9,6 +9,7 @@ namespace Winton.DomainModelling
     /// <summary>
     ///     An error indicating that an entity could not be found.
     /// </summary>
+    [Obsolete("Prefer to return results with a NotFoundError instead.", false)]
     public class EntityNotFoundException : DomainException
     {
         private EntityNotFoundException(string message)
