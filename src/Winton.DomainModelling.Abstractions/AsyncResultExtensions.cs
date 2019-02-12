@@ -18,7 +18,7 @@ namespace Winton.DomainModelling
         /// </summary>
         /// <remarks>
         ///     If this result is a failure then this is a no-op and the original failure is retained.
-        ///     This is useful form chaining serial operations together that return results.
+        ///     This is useful for chaining serial operations together that return results.
         /// </remarks>
         /// <typeparam name="TData">
         ///     The type of data encapsulated by the result.
