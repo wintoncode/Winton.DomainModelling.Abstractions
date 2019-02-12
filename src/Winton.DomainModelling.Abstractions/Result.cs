@@ -72,7 +72,7 @@ namespace Winton.DomainModelling
         ///     The type of data in the new result.
         /// </typeparam>
         /// <param name="selectData">
-        ///     The function that is invoked to map the data.
+        ///     The function that is invoked to select the data.
         /// </param>
         /// <returns>
         ///     If this result is a success, then the result of <paramref>selectData</paramref> function;
@@ -90,7 +90,7 @@ namespace Winton.DomainModelling
         ///     The type of data in the new result.
         /// </typeparam>
         /// <param name="selectData">
-        ///     The asynchronous function that is invoked to map the data.
+        ///     The asynchronous function that is invoked to select the data.
         /// </param>
         /// <returns>
         ///     If this result is a success, then the result of <paramref>selectData</paramref> function;
