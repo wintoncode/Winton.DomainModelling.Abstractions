@@ -45,13 +45,13 @@ namespace Winton.DomainModelling
         }
 
         /// <inheritdoc />
-        public override Result<TNewData> Select<TNewData>(Func<TData, TNewData> mapData)
+        public override Result<TNewData> Select<TNewData>(Func<TData, TNewData> selectData)
         {
             return new Failure<TNewData>(Error);
         }
 
         /// <inheritdoc />
-        public override Task<Result<TNewData>> Select<TNewData>(Func<TData, Task<TNewData>> mapData)
+        public override Task<Result<TNewData>> Select<TNewData>(Func<TData, Task<TNewData>> selectData)
         {
             return Task.FromResult<Result<TNewData>>(new Failure<TNewData>(Error));
         }

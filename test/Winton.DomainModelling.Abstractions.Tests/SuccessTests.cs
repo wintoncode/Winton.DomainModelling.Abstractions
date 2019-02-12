@@ -55,7 +55,7 @@ namespace Winton.DomainModelling
         public sealed class Select : SuccessTests
         {
             [Fact]
-            private void ShouldMapDataToNewType()
+            private void ShouldProjectDataToNewType()
             {
                 var success = new Success<int>(1);
 
@@ -65,7 +65,7 @@ namespace Winton.DomainModelling
             }
 
             [Fact]
-            private async Task ShouldMapDataToNewTypeAsynchronously()
+            private async Task ShouldProjectDataToNewTypeAsynchronously()
             {
                 var success = new Success<int>(1);
 

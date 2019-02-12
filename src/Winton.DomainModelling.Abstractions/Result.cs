@@ -71,14 +71,14 @@ namespace Winton.DomainModelling
         /// <typeparam name="TNewData">
         ///     The type of data in the new result.
         /// </typeparam>
-        /// <param name="mapData">
+        /// <param name="selectData">
         ///     The function that is invoked to map the data.
         /// </param>
         /// <returns>
-        ///     If this result is a success, then the result of <paramref>mapData</paramref> function;
+        ///     If this result is a success, then the result of <paramref>selectData</paramref> function;
         ///     otherwise the original error.
         /// </returns>
-        public abstract Result<TNewData> Select<TNewData>(Func<TData, TNewData> mapData);
+        public abstract Result<TNewData> Select<TNewData>(Func<TData, TNewData> selectData);
 
         /// <summary>
         ///     Projects a successful result's data from one type to another.
@@ -89,14 +89,14 @@ namespace Winton.DomainModelling
         /// <typeparam name="TNewData">
         ///     The type of data in the new result.
         /// </typeparam>
-        /// <param name="mapData">
+        /// <param name="selectData">
         ///     The asynchronous function that is invoked to map the data.
         /// </param>
         /// <returns>
-        ///     If this result is a success, then the result of <paramref>mapData</paramref> function;
+        ///     If this result is a success, then the result of <paramref>selectData</paramref> function;
         ///     otherwise the original error.
         /// </returns>
-        public abstract Task<Result<TNewData>> Select<TNewData>(Func<TData, Task<TNewData>> mapData);
+        public abstract Task<Result<TNewData>> Select<TNewData>(Func<TData, Task<TNewData>> selectData);
 
         /// <summary>
         ///     Invokes another result generating function which takes as input the data of this result

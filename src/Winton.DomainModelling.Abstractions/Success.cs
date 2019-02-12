@@ -72,15 +72,15 @@ namespace Winton.DomainModelling
         }
 
         /// <inheritdoc />
-        public override Result<TNewData> Select<TNewData>(Func<TData, TNewData> mapData)
+        public override Result<TNewData> Select<TNewData>(Func<TData, TNewData> selectData)
         {
-            return new Success<TNewData>(mapData(Data));
+            return new Success<TNewData>(selectData(Data));
         }
 
         /// <inheritdoc />
-        public override async Task<Result<TNewData>> Select<TNewData>(Func<TData, Task<TNewData>> mapData)
+        public override async Task<Result<TNewData>> Select<TNewData>(Func<TData, Task<TNewData>> selectData)
         {
-            TNewData data = await mapData(Data);
+            TNewData data = await selectData(Data);
             return new Success<TNewData>(data);
         }
 
