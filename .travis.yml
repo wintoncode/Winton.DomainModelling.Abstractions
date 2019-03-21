@@ -9,16 +9,16 @@ env:
 matrix:
   include:
     - os: linux
-      dotnet: 2.1.301
-    - os: osx 
+      dist: xenial
+      dotnet: 2.2
+    - os: osx
       osx_image: xcode9 # OSX 10.12
-      dotnet: 2.1.301
+      dotnet: 2.2.104
       before_install:
         - ulimit -n 4096
 script:
-  - dotnet restore
-  - dotnet build --configuration Release
-  - dotnet test test/Winton.DomainModelling.Abstractions.Tests/ --no-build --configuration Release --framework netcoreapp2.1
+  - dotnet build -c Release
+  - dotnet test --configuration Release --no-build
 notifications:
   on_success: always
   on_failure: always
