@@ -11,7 +11,7 @@ before_build:
     - dotnet tool install -g GitVersion.Tool --version 4.0.1-beta1-58
     - dotnet gitversion /l console /output buildserver
 build_script:
-    - dotnet build -c Release -p:Version=%GitVersion_NuGetVersion%v
+    - dotnet build -c Release -p:Version=%GitVersion_NuGetVersion%
 test_script:
     - dotnet test -c Release --no-build
 artifacts:
