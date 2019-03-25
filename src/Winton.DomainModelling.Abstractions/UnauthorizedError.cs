@@ -15,7 +15,7 @@ namespace Winton.DomainModelling
         /// <param name="detail">The detail that describes the error.</param>
         /// <returns>A new instance of <see cref="UnauthorizedError" />.</returns>
         public UnauthorizedError(string detail)
-            : base(detail)
+            : base("Unauthorized", detail)
         {
         }
     }

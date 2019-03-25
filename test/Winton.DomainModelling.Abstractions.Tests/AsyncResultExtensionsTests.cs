@@ -23,9 +23,9 @@ namespace Winton.DomainModelling
                 },
                 new object[]
                 {
-                    Task.FromResult<Result<int>>(new Failure<int>(new Error("Boom!"))),
+                    Task.FromResult<Result<int>>(new Failure<int>(new Error("Error", "Boom!"))),
                     new Func<int, Result<int>>(i => new Success<int>(i + 1)),
-                    new Failure<int>(new Error("Boom!"))
+                    new Failure<int>(new Error("Error", "Boom!"))
                 }
             };
 
@@ -39,9 +39,9 @@ namespace Winton.DomainModelling
                 },
                 new object[]
                 {
-                    Task.FromResult<Result<int>>(new Failure<int>(new Error("Boom!"))),
+                    Task.FromResult<Result<int>>(new Failure<int>(new Error("Error", "Boom!"))),
                     new Func<int, Task<Result<int>>>(i => Task.FromResult<Result<int>>(new Success<int>(i + 1))),
-                    new Failure<int>(new Error("Boom!"))
+                    new Failure<int>(new Error("Error", "Boom!"))
                 }
             };
 

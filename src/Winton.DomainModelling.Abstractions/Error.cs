@@ -21,10 +21,12 @@ namespace Winton.DomainModelling
         /// <summary>
         ///     Initializes a new instance of the <see cref="Error" /> class.
         /// </summary>
+        /// <param name="title">The title for this type of error.</param>
         /// <param name="detail">The detail that describes the error.</param>
         /// <returns>A new instance of <see cref="Error" />.</returns>
-        public Error(string detail)
+        public Error(string title, string detail)
         {
+            Title = title;
             Detail = detail;
         }
 
@@ -32,5 +34,10 @@ namespace Winton.DomainModelling
         ///     Gets the detail that describes the error.
         /// </summary>
         public string Detail { get; }
+
+        /// <summary>
+        ///     Gets the title of the error. This should be the same for all instances of the same error type.
+        /// </summary>
+        public string Title { get; }
     }
 }

@@ -14,25 +14,25 @@ namespace Winton.DomainModelling
             [Fact]
             private void ShouldCombineErrorsIfTheOtherResultIsAFailure()
             {
-                var failure = new Failure<int>(new Error("Ka"));
+                var failure = new Failure<int>(new Error("Error", "Ka"));
 
                 Result<int> combined = failure.Combine(
-                    new Failure<int>(new Error("Boom!")),
+                    new Failure<int>(new Error("Error", "Boom!")),
                     (i, j) => i + j,
-                    (error, otherError) => new Error($"{error.Detail}-{otherError.Detail}"));
+                    (error, otherError) => new Error("Error", $"{error.Detail}-{otherError.Detail}"));
 
-                combined.Should().BeEquivalentTo(new Failure<int>(new Error("Ka-Boom!")));
+                combined.Should().BeEquivalentTo(new Failure<int>(new Error("Error", "Ka-Boom!")));
             }
 
             [Fact]
             private void ShouldReturnFailureWithOriginalErrorIfOtherIsASuccess()
             {
-                var failure = new Failure<int>(new Error("Ka"));
+                var failure = new Failure<int>(new Error("Error", "Ka"));
 
                 Result<int> combined = failure.Combine(
                     new Success<int>(2),
                     (i, j) => i + j,
-                    (error, otherError) => new Error($"{error.Detail}-{otherError.Detail}"));
+                    (error, otherError) => new Error("Error", $"{error.Detail}-{otherError.Detail}"));
 
                 combined.Should().BeEquivalentTo(failure);
             }
@@ -43,7 +43,7 @@ namespace Winton.DomainModelling
             [Fact]
             private void ShouldInvokeOnFailureFunc()
             {
-                var failure = new Failure<int>(new Error("Boom!"));
+                var failure = new Failure<int>(new Error("Error", "Boom!"));
 
                 bool matchedFailure = failure.Match(_ => false, _ => true);
 
@@ -56,7 +56,7 @@ namespace Winton.DomainModelling
             [Fact]
             private void ShouldReturnOriginalFailure()
             {
-                var failure = new Failure<int>(new Error("Boom!"));
+                var failure = new Failure<int>(new Error("Error", "Boom!"));
 
                 Result<string> result = failure.Select(i => $"{i}");
 
@@ -66,7 +66,7 @@ namespace Winton.DomainModelling
             [Fact]
             private async Task ShouldReturnOriginalFailureAsynchronously()
             {
-                var failure = new Failure<int>(new Error("Boom!"));
+                var failure = new Failure<int>(new Error("Error", "Boom!"));
 
                 Result<string> result = await failure.Select(i => Task.FromResult($"{i}"));
 
@@ -79,7 +79,7 @@ namespace Winton.DomainModelling
             [Fact]
             private void ShouldReturnFailureWithOriginalError()
             {
-                var failure = new Failure<int>(new Error("Boom!"));
+                var failure = new Failure<int>(new Error("Error", "Boom!"));
 
                 Result<int> result = failure.Then(i => new Success<int>(i + 1));
 
@@ -95,7 +95,7 @@ namespace Winton.DomainModelling
                     return new Success<int>(i + 1);
                 }
 
-                var failure = new Failure<int>(new Error("Boom!"));
+                var failure = new Failure<int>(new Error("Error", "Boom!"));
 
                 Result<int> result = await failure.Then(OnSuccess);
 
