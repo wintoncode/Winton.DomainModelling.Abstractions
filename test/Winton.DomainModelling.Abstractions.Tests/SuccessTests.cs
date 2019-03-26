@@ -19,7 +19,7 @@ namespace Winton.DomainModelling
                 Result<int> combined = success.Combine(
                     new Success<int>(2),
                     (i, j) => i + j,
-                    (error, otherError) => new Error($"{error.Detail}-{otherError.Detail}"));
+                    (error, otherError) => new Error("Error", $"{error.Detail}-{otherError.Detail}"));
 
                 combined.Should().BeEquivalentTo(new Success<int>(3));
             }
@@ -28,12 +28,12 @@ namespace Winton.DomainModelling
             private void ShouldReturnFailureWithOtherErrorIfTheOtherResultIsAFailure()
             {
                 var success = new Success<int>(1);
-                var otherResult = new Failure<int>(new Error("Boom!"));
+                var otherResult = new Failure<int>(new Error("Error", "Boom!"));
 
                 Result<int> combined = success.Combine(
                     otherResult,
                     (i, j) => i + j,
-                    (error, otherError) => new Error($"{error.Detail}-{otherError.Detail}"));
+                    (error, otherError) => new Error("Error", $"{error.Detail}-{otherError.Detail}"));
 
                 combined.Should().BeEquivalentTo(otherResult);
             }
