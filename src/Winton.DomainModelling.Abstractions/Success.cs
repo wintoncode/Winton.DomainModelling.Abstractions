@@ -72,6 +72,32 @@ namespace Winton.DomainModelling
         }
 
         /// <inheritdoc />
+        public override Result<TData> OnSuccess(Action onSuccess)
+        {
+            return OnSuccess(data => onSuccess());
+        }
+
+        /// <inheritdoc />
+        public override Result<TData> OnSuccess(Action<TData> onSuccess)
+        {
+            onSuccess(Data);
+            return this;
+        }
+
+        /// <inheritdoc />
+        public override async Task<Result<TData>> OnSuccess(Func<Task> onSuccess)
+        {
+            return await OnSuccess(data => onSuccess());
+        }
+
+        /// <inheritdoc />
+        public override async Task<Result<TData>> OnSuccess(Func<TData, Task> onSuccess)
+        {
+            await onSuccess(Data);
+            return this;
+        }
+
+        /// <inheritdoc />
         public override Result<TNewData> Select<TNewData>(Func<TData, TNewData> selectData)
         {
             return new Success<TNewData>(selectData(Data));

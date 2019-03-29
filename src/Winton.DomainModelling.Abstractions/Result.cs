@@ -63,6 +63,66 @@ namespace Winton.DomainModelling
         public abstract T Match<T>(Func<TData, T> onSuccess, Func<Error, T> onFailure);
 
         /// <summary>
+        ///     Invokes the specified action if the result was successful and returns the original result.
+        /// </summary>
+        /// <remarks>
+        ///     If this result is a failure then this is a no-op and the original failure is retained.
+        ///     This is useful for publishing domain model notifications when an operation has been successful.
+        /// </remarks>
+        /// <param name="onSuccess">
+        ///     The action that will be invoked if this result represents a success.
+        /// </param>
+        /// <returns>
+        ///     The original result.
+        /// </returns>
+        public abstract Result<TData> OnSuccess(Action onSuccess);
+
+        /// <summary>
+        ///     Invokes the specified action if the result was successful and returns the original result.
+        /// </summary>
+        /// <remarks>
+        ///     If this result is a failure then this is a no-op and the original failure is retained.
+        ///     This is useful for publishing domain model notifications when an operation has been successful.
+        /// </remarks>
+        /// <param name="onSuccess">
+        ///     The action that will be invoked if this result represents a success.
+        /// </param>
+        /// <returns>
+        ///     The original result.
+        /// </returns>
+        public abstract Result<TData> OnSuccess(Action<TData> onSuccess);
+
+        /// <summary>
+        ///     Invokes the specified action if the result was successful and returns the original result.
+        /// </summary>
+        /// <remarks>
+        ///     If this result is a failure then this is a no-op and the original failure is retained.
+        ///     This is useful for publishing domain model notifications when an operation has been successful.
+        /// </remarks>
+        /// <param name="onSuccess">
+        ///     The asynchronous action that will be invoked if this result represents a success.
+        /// </param>
+        /// <returns>
+        ///     The original result.
+        /// </returns>
+        public abstract Task<Result<TData>> OnSuccess(Func<Task> onSuccess);
+
+        /// <summary>
+        ///     Invokes the specified action if the result was successful and returns the original result.
+        /// </summary>
+        /// <remarks>
+        ///     If this result is a failure then this is a no-op and the original failure is retained.
+        ///     This is useful for publishing domain model notifications when an operation has been successful.
+        /// </remarks>
+        /// <param name="onSuccess">
+        ///     The asynchronous action that will be invoked if this result represents a success.
+        /// </param>
+        /// <returns>
+        ///     The original result.
+        /// </returns>
+        public abstract Task<Result<TData>> OnSuccess(Func<TData, Task> onSuccess);
+
+        /// <summary>
         ///     Projects a successful result's data from one type to another.
         /// </summary>
         /// <remarks>
@@ -75,8 +135,8 @@ namespace Winton.DomainModelling
         ///     The function that is invoked to select the data.
         /// </param>
         /// <returns>
-        ///     If this result is a success, then the result of <paramref>selectData</paramref> function;
-        ///     otherwise the original error.
+        ///     A new result containing either; the output of the <paramref>selectData</paramref> function
+        ///     if this result is a success, otherwise the original error.
         /// </returns>
         public abstract Result<TNewData> Select<TNewData>(Func<TData, TNewData> selectData);
 
@@ -93,8 +153,8 @@ namespace Winton.DomainModelling
         ///     The asynchronous function that is invoked to select the data.
         /// </param>
         /// <returns>
-        ///     If this result is a success, then the result of <paramref>selectData</paramref> function;
-        ///     otherwise the original error.
+        ///     A new result containing either; the output of the <paramref>selectData</paramref> function
+        ///     if this result is a success, otherwise the original error.
         /// </returns>
         public abstract Task<Result<TNewData>> Select<TNewData>(Func<TData, Task<TNewData>> selectData);
 
@@ -104,7 +164,7 @@ namespace Winton.DomainModelling
         /// </summary>
         /// <remarks>
         ///     If this result is a failure then this is a no-op and the original failure is retained.
-        ///     This is useful form chaining serial operations together that return results.
+        ///     This is useful for chaining serial operations together that return results.
         /// </remarks>
         /// <typeparam name="TNewData">
         ///     The type of data in the new result.
@@ -124,7 +184,7 @@ namespace Winton.DomainModelling
         /// </summary>
         /// <remarks>
         ///     If this result is a failure then this is a no-op and the original failure is retained.
-        ///     This is useful form chaining serial operations together that return results.
+        ///     This is useful for chaining serial operations together that return results.
         /// </remarks>
         /// <typeparam name="TNewData">
         ///     The type of data in the new result.
