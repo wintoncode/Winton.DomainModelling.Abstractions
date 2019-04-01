@@ -51,6 +51,90 @@ namespace Winton.DomainModelling
             }
         }
 
+        public sealed class OnSuccess : FailureTests
+        {
+            [Fact]
+            private void ShouldNotInvokeAction()
+            {
+                var invoked = false;
+                var failure = new Failure<int>(new Error("Error", "Boom!"));
+
+                failure.OnSuccess(() => invoked = true);
+
+                invoked.Should().BeFalse();
+            }
+
+            [Fact]
+            private void ShouldNotInvokeActionWithParameters()
+            {
+                var invoked = false;
+                var failure = new Failure<int>(new Error("Error", "Boom!"));
+
+                failure.OnSuccess(i => invoked = true);
+
+                invoked.Should().BeFalse();
+            }
+
+            [Fact]
+            private async Task ShouldNotInvokeAsyncAction()
+            {
+                var invoked = false;
+                async Task OnSuccess()
+                {
+                    await Task.Yield();
+                    invoked = true;
+                }
+
+                var failure = new Failure<int>(new Error("Error", "Boom!"));
+
+                await failure.OnSuccess(OnSuccess);
+
+                invoked.Should().BeFalse();
+            }
+
+            [Fact]
+            private async Task ShouldNotInvokeAsyncActionWithParameters()
+            {
+                var invoked = false;
+                async Task OnSuccess(int i)
+                {
+                    await Task.Yield();
+                    invoked = true;
+                }
+
+                var failure = new Failure<int>(new Error("Error", "Boom!"));
+
+                await failure.OnSuccess(OnSuccess);
+
+                invoked.Should().BeFalse();
+            }
+
+            [Fact]
+            private void ShouldReturnOriginalResult()
+            {
+                var failure = new Failure<int>(new Error("Error", "Boom!"));
+
+                Result<int> result = failure.OnSuccess(() => { });
+
+                result.Should().BeSameAs(failure);
+            }
+
+            [Fact]
+            private async Task ShouldReturnOriginalResultWhenAsyncAction()
+            {
+                async Task OnSuccess()
+                {
+                    await Task.Yield();
+                }
+
+                var failure = new Failure<int>(new Error("Error", "Boom!"));
+
+                Result<int> result = await failure.OnSuccess(OnSuccess);
+
+                result.Should().BeSameAs(failure);
+            }
+        }
+
         public sealed class Select : FailureTests
         {
             [Fact]

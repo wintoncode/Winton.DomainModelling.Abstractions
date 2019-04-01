@@ -52,6 +52,90 @@ namespace Winton.DomainModelling
             }
         }
 
+        public sealed class OnSuccess : FailureTests
+        {
+            [Fact]
+            private void ShouldInvokeAction()
+            {
+                var invoked = false;
+                var success = new Success<int>(1);
+
+                success.OnSuccess(() => invoked = true);
+
+                invoked.Should().BeTrue();
+            }
+
+            [Fact]
+            private void ShouldNotInvokeActionWithParameters()
+            {
+                var invoked = false;
+                var success = new Success<int>(1);
+
+                success.OnSuccess(i => invoked = true);
+
+                invoked.Should().BeTrue();
+            }
+
+            [Fact]
+            private async Task ShouldNotInvokeAsyncAction()
+            {
+                var invoked = false;
+                async Task OnSuccess()
+                {
+                    await Task.Yield();
+                    invoked = true;
+                }
+
+                var success = new Success<int>(1);
+
+                await success.OnSuccess(OnSuccess);
+
+                invoked.Should().BeTrue();
+            }
+
+            [Fact]
+            private async Task ShouldNotInvokeAsyncActionWithParameters()
+            {
+                var invoked = false;
+                async Task OnSuccess(int i)
+                {
+                    await Task.Yield();
+                    invoked = true;
+                }
+
+                var success = new Success<int>(1);
+
+                await success.OnSuccess(OnSuccess);
+
+                invoked.Should().BeTrue();
+            }
+
+            [Fact]
+            private void ShouldReturnOriginalResult()
+            {
+                var success = new Success<int>(1);
+
+                Result<int> result = success.OnSuccess(() => { });
+
+                result.Should().BeSameAs(success);
+            }
+
+            [Fact]
+            private async Task ShouldReturnOriginalResultWhenAsyncAction()
+            {
+                async Task OnSuccess()
+                {
+                    await Task.Yield();
+                }
+
+                var success = new Success<int>(1);
+
+                Result<int> result = await success.OnSuccess(OnSuccess);
+
+                result.Should().BeSameAs(success);
+            }
+        }
+
         public sealed class Select : SuccessTests
         {
             [Fact]
