@@ -13,6 +13,115 @@ namespace Winton.DomainModelling
     public static class AsyncResultExtensions
     {
         /// <summary>
+        ///     Combines this result with another.
+        ///     If both are successful then <paramref>combineData</paramref> is invoked;
+        ///     else if either is a failure then <paramref>combineErrors</paramref> is invoked.
+        /// </summary>
+        /// <typeparam name="TData">
+        ///     The type of data encapsulated by the result.
+        /// </typeparam>
+        /// <typeparam name="TOtherData">
+        ///     The type of data in the other result.
+        /// </typeparam>
+        /// <typeparam name="TNewData">
+        ///     The type of data in the combined result.
+        /// </typeparam>
+        /// <param name="resultTask">
+        ///     The asynchronous result that this extension method is invoked on.
+        /// </param>
+        /// <param name="other">
+        ///     The other result to be combined with this one.
+        /// </param>
+        /// <param name="combineData">
+        ///     The function that is invoked to combine the data when both of the results are successful.
+        /// </param>
+        /// <param name="combineErrors">
+        ///     The function that is invoked to combine the errors when either of the results is a failure.
+        /// </param>
+        /// <returns>
+        ///     A new <see cref="Result{TNewData}" />.
+        /// </returns>
+        public static async Task<Result<TNewData>> Combine<TData, TOtherData, TNewData>(
+            this Task<Result<TData>> resultTask,
+            Result<TOtherData> other,
+            Func<TData, TOtherData, TNewData> combineData,
+            Func<Error, Error, Error> combineErrors)
+        {
+            Result<TData> result = await resultTask;
+            return result.Combine(other, combineData, combineErrors);
+        }
+
+        /// <summary>
+        ///     Combines this result with another.
+        ///     If both are successful then <paramref>combineData</paramref> is invoked;
+        ///     else if either is a failure then <paramref>combineErrors</paramref> is invoked.
+        /// </summary>
+        /// <typeparam name="TData">
+        ///     The type of data encapsulated by the result.
+        /// </typeparam>
+        /// <typeparam name="TOtherData">
+        ///     The type of data in the other result.
+        /// </typeparam>
+        /// <typeparam name="TNewData">
+        ///     The type of data in the combined result.
+        /// </typeparam>
+        /// <param name="resultTask">
+        ///     The asynchronous result that this extension method is invoked on.
+        /// </param>
+        /// <param name="otherResultTask">
+        ///     The other asynchronous result to be combined with this one.
+        /// </param>
+        /// <param name="combineData">
+        ///     The function that is invoked to combine the data when both of the results are successful.
+        /// </param>
+        /// <param name="combineErrors">
+        ///     The function that is invoked to combine the errors when either of the results is a failure.
+        /// </param>
+        /// <returns>
+        ///     A new <see cref="Result{TNewData}" />.
+        /// </returns>
+        public static async Task<Result<TNewData>> Combine<TData, TOtherData, TNewData>(
+            this Task<Result<TData>> resultTask,
+            Task<Result<TOtherData>> otherResultTask,
+            Func<TData, TOtherData, TNewData> combineData,
+            Func<Error, Error, Error> combineErrors)
+        {
+            Result<TData> result = await resultTask;
+            Result<TOtherData> otherResult = await otherResultTask;
+            return result.Combine(otherResult, combineData, combineErrors);
+        }
+
+        /// <summary>
+        ///     Used to match on whether this result is a success or a failure.
+        /// </summary>
+        /// <typeparam name="TData">
+        ///     The type of data encapsulated by the result.
+        /// </typeparam>
+        /// <typeparam name="T">
+        ///     The type that is returned.
+        /// </typeparam>
+        /// <param name="resultTask">
+        ///     The asynchronous result that this extension method is invoked on.
+        /// </param>
+        /// <param name="onSuccess">
+        ///     The function that is invoked if this result represents a success.
+        /// </param>
+        /// <param name="onFailure">
+        ///     The function that is invoked if this result represents a failure.
+        /// </param>
+        /// <returns>
+        ///     A value that is mapped from either the data or the error.
+        /// </returns>
+        public static async Task<T> Match<TData, T>(
+            this Task<Result<TData>> resultTask,
+            Func<TData, T> onSuccess,
+            Func<Error, T> onFailure)
+        {
+            Result<TData> result = await resultTask;
+            return result.Match(onSuccess, onFailure);
+        }
+
+        /// <summary>
         ///     Invokes the specified action if the result was successful and returns the original result.
         /// </summary>
         /// <remarks>
