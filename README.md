@@ -16,7 +16,9 @@ Instances are equal if their IDs are equal. Any equatable ID type can be used.
 
 ## Results
 
-`Result<TData>` represents the result of a domain operation that returns data of type `TData`. It is an abstract type with exactly two concretions: `Success` and `Failure`. It is a specialisation of the more generic `Either` type found in functional programming and is inspired by Scott Wlaschin's Railway Oriented Programming in F#.
+### `Result<TData>` 
+
+Represents the result of a domain operation that returns data of type `TData`. It is an abstract type with exactly two concretions: `Success` and `Failure`. It is a specialisation of the more generic `Either` type found in functional programming and is inspired by Scott Wlaschin's Railway Oriented Programming in F#.
 
 It should be used whenever a domain operation may fail, but where that failure mode is a known part of the domain model. For example, consider a domain operation that looks up an adult written without the use of `Result`.
 
@@ -60,7 +62,7 @@ private Result<Person> CheckAge(Person person)
 }
 ```
 
-Now we have a much more expressive method signature, which indicates that we might get back a `Person`, but we might also recieve an `Error`. The client is forced to deal with the fact that the operation might fail if they want to try and access the `Person`. We have also been able to extract a method called `CheckAge` that could be reused throughout the domain that has the characteristics of a pure function. The implemenation is now easy to understand and simple to test.
+Now we have a much more expressive method signature, which indicates that we might recieve a `Person`, but we might also recieve an `Error`. The client is forced to deal with the fact that the operation might fail if they want to try and access the `Person`. We have also been able to extract a method called `CheckAge` that could be reused throughout the domain that has the characteristics of a pure function. The implemenation is now easy to understand and simple to test.
 
 If the operation has no data to return then a `Result<Unit>` can be used. `Unit` is a special type that indicates the absence of a value, because `void` is not a valid type in C#.
 
@@ -68,9 +70,17 @@ Some recommendations on using `Result` types:
 * Make all public domain methods return a `Result<TData>`. Most domain operations will have a failure case that the client should be informed about, but even if they don't, by returning `Result` now it can be easily added later without breaking the public API.
 * Once an operation is in "result space", keep it there for as long as possible. `Result` has a fluent API to facilitate this. This is similar to how, once one operation becomes `async` it is best to make all surrounding operations `async` too. This can be re-phrased as, don't match on the result until the last possible moment. For example, in a web API this would mean only unwrapping the result in the Controller.
 
+### `Success`
+
+Represents a successful `Result`. To construct a `Success<Unit>` use the static `Success.Unit()` method.
+
+### `Failure`
+
+Represents a failed `Result`. When constructed it takes an `Error` which contains the details about why the failure occurred.
+
 ## Errors
 
-A `Failure` result requires an error in order to convey information about why an operation failed. Like exceptions, errors form a hierarchy, with all errors deriving from the base `Error` type. This library defines a few common domain error types, which are listed below, but it is expected that more specific errors will be defined on a per-domain basis.
+Like exceptions, errors form a hierarchy, with all errors deriving from the base `Error` type. This library defines a few common domain error types, which are listed below, but it is expected that more specific errors will be defined on a per-domain basis.
 
 Some recommendations on designing errors:
 * Try not to create custom errors that are too granular. Model them as you would entities and use the language of the domain model to guide their creation. The concept should make sense to a domain expert.
