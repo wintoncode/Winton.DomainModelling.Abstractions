@@ -14,8 +14,9 @@ Abstractions useful for modelling a domain.
 A base class to implement entity types, which are defined by their identity rather than their attributes. 
 Instances are equal if their IDs are equal. Any equatable ID type can be used.
 
-### `Result<TData>`
-Represents the result of a domain operation that returns data of type `TData`. It is an abstract type with exactly two concretions: `Success` and `Failure`. It is a specialisation of the more generic `Either` type found in functional programming and is inspired by Scott Wlaschin's Railway Oriented Programming in F#.
+## Results
+
+`Result<TData>` represents the result of a domain operation that returns data of type `TData`. It is an abstract type with exactly two concretions: `Success` and `Failure`. It is a specialisation of the more generic `Either` type found in functional programming and is inspired by Scott Wlaschin's Railway Oriented Programming in F#.
 
 It should be used whenever a domain operation may fail, but where that failure mode is a known part of the domain model. For example, consider a domain operation that looks up an adult written without the use of `Result`.
 
