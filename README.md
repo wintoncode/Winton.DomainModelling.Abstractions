@@ -18,7 +18,7 @@ Instances are equal if their IDs are equal. Any equatable ID type can be used.
 
 ### `Result<TData>` 
 
-Represents the result of a domain operation that returns data of type `TData`. It is an abstract type with exactly two concretions: `Success` and `Failure`. It is a specialisation of the more generic `Either` type found in functional programming and is inspired by Scott Wlaschin's Railway Oriented Programming in F#.
+Represents the result of a domain operation that returns data of type `TData`. It is an abstract type with exactly two concretions: `Success` and `Failure`. It is a specialisation of the more generic `Either` type found in functional programming and is inspired by [Scott Wlaschin's Railway Oriented Programming](https://fsharpforfunandprofit.com/rop/) in F#.
 
 It should be used whenever a domain operation may fail, but where that failure mode is a known part of the domain model. For example, consider a domain operation that looks up an adult written without the use of `Result`.
 
@@ -85,7 +85,7 @@ Like exceptions, errors form a hierarchy, with all errors deriving from the base
 Some recommendations on designing errors:
 * Try not to create custom errors that are too granular. Model them as you would entities and use the language of the domain model to guide their creation. The concept should make sense to a domain expert.
 * The title should be the same for all instances of the error. The details are where instance specific information can be provided. If you are creating a custom error, make the title static and only let clients customise the details. See implementations of errors in this library for examples. 
-* Don't use them for non-domain errors. Exceptions should still be used for system failures, such as network requests, and programming errors.
+* Only use them for domain errors. Exceptions should still be used for system failures, such as network requests, and programming errors.
 
 ### `Error`
 
