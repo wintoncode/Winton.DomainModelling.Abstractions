@@ -13,6 +13,64 @@ namespace Winton.DomainModelling
     public static class AsyncResultExtensions
     {
         /// <summary>
+        ///     Invokes another result generating function which takes as input the error of this result
+        ///     if it is a failure after it has been awaited.
+        /// </summary>
+        /// <remarks>
+        ///     If this result is a success then this is a no-op and the original success is retained.
+        ///     This is useful for handling errors.
+        /// </remarks>
+        /// <typeparam name="TData">
+        ///     The type of data encapsulated by the result.
+        /// </typeparam>
+        /// <param name="resultTask">
+        ///     The asynchronous result that this extension method is invoked on.
+        /// </param>
+        /// <param name="onFailure">
+        ///     The function that is invoked if this result is a failure.
+        /// </param>
+        /// <returns>
+        ///     If this result is a failure, then the result of <paramref>onFailure</paramref> function;
+        ///     otherwise the original error.
+        /// </returns>
+        public static async Task<Result<TData>> Catch<TData>(
+            this Task<Result<TData>> resultTask,
+            Func<Error, Result<TData>> onFailure)
+        {
+            Result<TData> result = await resultTask;
+            return result.Catch(onFailure);
+        }
+
+        /// <summary>
+        ///     Invokes another result generating function which takes as input the error of this result
+        ///     if it is a failure after it has been awaited.
+        /// </summary>
+        /// <remarks>
+        ///     If this result is a success then this is a no-op and the original success is retained.
+        ///     This is useful for handling errors.
+        /// </remarks>
+        /// <typeparam name="TData">
+        ///     The type of data encapsulated by the result.
+        /// </typeparam>
+        /// <param name="resultTask">
+        ///     The asynchronous result that this extension method is invoked on.
+        /// </param>
+        /// <param name="onFailure">
+        ///     The asynchronous function that is invoked if this result is a failure.
+        /// </param>
+        /// <returns>
+        ///     If this result is a failure, then the result of <paramref>onFailure</paramref> function;
+        ///     otherwise the original error.
+        /// </returns>
+        public static async Task<Result<TData>> Catch<TData>(
+            this Task<Result<TData>> resultTask,
+            Func<Error, Task<Result<TData>>> onFailure)
+        {
+            Result<TData> result = await resultTask;
+            return await result.Catch(onFailure);
+        }
+
+        /// <summary>
         ///     Combines this result with another.
         ///     If both are successful then <paramref>combineData</paramref> is invoked;
         ///     else if either is a failure then <paramref>combineErrors</paramref> is invoked.
@@ -122,11 +180,117 @@ namespace Winton.DomainModelling
         }
 
         /// <summary>
-        ///     Invokes the specified action if the result was successful and returns the original result.
+        ///     Invokes the specified action if the result is a failure and returns the original result.
+        /// </summary>
+        /// <remarks>
+        ///     If this result is a success then this is a no-op and the original success is retained.
+        ///     This is useful for publishing domain model notifications when an operation fails.
+        /// </remarks>
+        /// <typeparam name="TData">
+        ///     The type of data encapsulated by the result.
+        /// </typeparam>
+        /// <param name="resultTask">
+        ///     The asynchronous result that this extension method is invoked on.
+        /// </param>
+        /// <param name="onFailure">
+        ///     The action that will be invoked if this result is a failure.
+        /// </param>
+        /// <returns>
+        ///     The original result.
+        /// </returns>
+        public static async Task<Result<TData>> OnFailure<TData>(
+            this Task<Result<TData>> resultTask,
+            Action onFailure)
+        {
+            return await resultTask.OnFailure(_ => onFailure());
+        }
+
+        /// <summary>
+        ///     Invokes the specified action if the result is a failure and returns the original result.
+        /// </summary>
+        /// <remarks>
+        ///     If this result is a success then this is a no-op and the original success is retained.
+        ///     This is useful for publishing domain model notifications when an operation fails.
+        /// </remarks>
+        /// <typeparam name="TData">
+        ///     The type of data encapsulated by the result.
+        /// </typeparam>
+        /// <param name="resultTask">
+        ///     The asynchronous result that this extension method is invoked on.
+        /// </param>
+        /// <param name="onFailure">
+        ///     The action that will be invoked if this result is a failure.
+        /// </param>
+        /// <returns>
+        ///     The original result.
+        /// </returns>
+        public static async Task<Result<TData>> OnFailure<TData>(
+            this Task<Result<TData>> resultTask,
+            Action<Error> onFailure)
+        {
+            Result<TData> result = await resultTask;
+            return result.OnFailure(onFailure);
+        }
+
+        /// <summary>
+        ///     Invokes the specified action if the result is a failure and returns the original result.
+        /// </summary>
+        /// <remarks>
+        ///     If this result is a success then this is a no-op and the original success is retained.
+        ///     This is useful for publishing domain model notifications when an operation fails.
+        /// </remarks>
+        /// <typeparam name="TData">
+        ///     The type of data encapsulated by the result.
+        /// </typeparam>
+        /// <param name="resultTask">
+        ///     The asynchronous result that this extension method is invoked on.
+        /// </param>
+        /// <param name="onFailure">
+        ///     The asynchronous action that will be invoked if this result is a failure.
+        /// </param>
+        /// <returns>
+        ///     The original result.
+        /// </returns>
+        public static async Task<Result<TData>> OnFailure<TData>(
+            this Task<Result<TData>> resultTask,
+            Func<Task> onFailure)
+        {
+            return await resultTask.OnFailure(_ => onFailure());
+        }
+
+        /// <summary>
+        ///     Invokes the specified action if the result is a failure and returns the original result.
+        /// </summary>
+        /// <remarks>
+        ///     If this result is a success then this is a no-op and the original success is retained.
+        ///     This is useful for publishing domain model notifications when an operation fails.
+        /// </remarks>
+        /// <typeparam name="TData">
+        ///     The type of data encapsulated by the result.
+        /// </typeparam>
+        /// <param name="resultTask">
+        ///     The asynchronous result that this extension method is invoked on.
+        /// </param>
+        /// <param name="onFailure">
+        ///     The asynchronous action that will be invoked if this result is a failure.
+        /// </param>
+        /// <returns>
+        ///     The original result.
+        /// </returns>
+        public static async Task<Result<TData>> OnFailure<TData>(
+            this Task<Result<TData>> resultTask,
+            Func<Error, Task> onFailure)
+        {
+            Result<TData> result = await resultTask;
+            return await result.OnFailure(onFailure);
+        }
+
+        /// <summary>
+        ///     Invokes the specified action if the result is a success and returns the original result.
         /// </summary>
         /// <remarks>
         ///     If this result is a failure then this is a no-op and the original failure is retained.
-        ///     This is useful for publishing domain model notifications when an operation has been successful.
+        ///     This is useful for publishing domain model notifications when an operation succeeds.
         /// </remarks>
         /// <typeparam name="TData">
         ///     The type of data encapsulated by the result.
@@ -135,7 +299,7 @@ namespace Winton.DomainModelling
         ///     The asynchronous result that this extension method is invoked on.
         /// </param>
         /// <param name="onSuccess">
-        ///     The action that will be invoked if this result represents a success.
+        ///     The action that will be invoked if this result is a success.
         /// </param>
         /// <returns>
         ///     The original result.
@@ -148,11 +312,11 @@ namespace Winton.DomainModelling
         }
 
         /// <summary>
-        ///     Invokes the specified action if the result was successful and returns the original result.
+        ///     Invokes the specified action if the result is a success and returns the original result.
         /// </summary>
         /// <remarks>
         ///     If this result is a failure then this is a no-op and the original failure is retained.
-        ///     This is useful for publishing domain model notifications when an operation has been successful.
+        ///     This is useful for publishing domain model notifications when an operation succeeds.
         /// </remarks>
         /// <typeparam name="TData">
         ///     The type of data encapsulated by the result.
@@ -161,7 +325,7 @@ namespace Winton.DomainModelling
         ///     The asynchronous result that this extension method is invoked on.
         /// </param>
         /// <param name="onSuccess">
-        ///     The action that will be invoked if this result represents a success.
+        ///     The action that will be invoked if this result is a success.
         /// </param>
         /// <returns>
         ///     The original result.
@@ -175,11 +339,11 @@ namespace Winton.DomainModelling
         }
 
         /// <summary>
-        ///     Invokes the specified action if the result was successful and returns the original result.
+        ///     Invokes the specified action if the result is a success and returns the original result.
         /// </summary>
         /// <remarks>
         ///     If this result is a failure then this is a no-op and the original failure is retained.
-        ///     This is useful for publishing domain model notifications when an operation has been successful.
+        ///     This is useful for publishing domain model notifications when an operation succeeds.
         /// </remarks>
         /// <typeparam name="TData">
         ///     The type of data encapsulated by the result.
@@ -188,7 +352,7 @@ namespace Winton.DomainModelling
         ///     The asynchronous result that this extension method is invoked on.
         /// </param>
         /// <param name="onSuccess">
-        ///     The asynchronous action that will be invoked if this result represents a success.
+        ///     The asynchronous action that will be invoked if this result is a success.
         /// </param>
         /// <returns>
         ///     The original result.
@@ -201,11 +365,11 @@ namespace Winton.DomainModelling
         }
 
         /// <summary>
-        ///     Invokes the specified action if the result was successful and returns the original result.
+        ///     Invokes the specified action if the result is a success and returns the original result.
         /// </summary>
         /// <remarks>
         ///     If this result is a failure then this is a no-op and the original failure is retained.
-        ///     This is useful for publishing domain model notifications when an operation has been successful.
+        ///     This is useful for publishing domain model notifications when an operation succeeds.
         /// </remarks>
         /// <typeparam name="TData">
         ///     The type of data encapsulated by the result.
@@ -214,7 +378,7 @@ namespace Winton.DomainModelling
         ///     The asynchronous result that this extension method is invoked on.
         /// </param>
         /// <param name="onSuccess">
-        ///     The asynchronous action that will be invoked if this result represents a success.
+        ///     The asynchronous action that will be invoked if this result is a success.
         /// </param>
         /// <returns>
         ///     The original result.
@@ -242,19 +406,19 @@ namespace Winton.DomainModelling
         /// <param name="resultTask">
         ///     The asynchronous result that this extension method is invoked on.
         /// </param>
-        /// <param name="selectData">
+        /// <param name="selector">
         ///     The function that is invoked to select the data.
         /// </param>
         /// <returns>
-        ///     A new result containing either; the output of the <paramref>selectData</paramref> function
-        ///     if this result is a success, otherwise the original error.
+        ///     A new result containing either; the output of the <paramref>selector</paramref> function
+        ///     if this result is a success, otherwise the original failure.
         /// </returns>
         public static async Task<Result<TNewData>> Select<TData, TNewData>(
             this Task<Result<TData>> resultTask,
-            Func<TData, TNewData> selectData)
+            Func<TData, TNewData> selector)
         {
             Result<TData> result = await resultTask;
-            return result.Select(selectData);
+            return result.Select(selector);
         }
 
         /// <summary>
@@ -272,24 +436,78 @@ namespace Winton.DomainModelling
         /// <param name="resultTask">
         ///     The asynchronous result that this extension method is invoked on.
         /// </param>
-        /// <param name="selectData">
+        /// <param name="selector">
         ///     The asynchronous function that is invoked to select the data.
         /// </param>
         /// <returns>
-        ///     A new result containing either; the output of the <paramref>selectData</paramref> function
-        ///     if this result is a success, otherwise the original error.
+        ///     A new result containing either; the output of the <paramref>selector</paramref> function
+        ///     if this result is a success, otherwise the original failure.
         /// </returns>
         public static async Task<Result<TNewData>> Select<TData, TNewData>(
             this Task<Result<TData>> resultTask,
-            Func<TData, Task<TNewData>> selectData)
+            Func<TData, Task<TNewData>> selector)
         {
             Result<TData> result = await resultTask;
-            return await result.Select(selectData);
+            return await result.Select(selector);
+        }
+
+        /// <summary>
+        ///     Projects a failed result's data from one type to another.
+        /// </summary>
+        /// <remarks>
+        ///     If this result is a success then this is a no-op.
+        /// </remarks>
+        /// <typeparam name="TData">
+        ///     The type of data encapsulated by the result.
+        /// </typeparam>
+        /// <param name="resultTask">
+        ///     The asynchronous result that this extension method is invoked on.
+        /// </param>
+        /// <param name="selector">
+        ///     The function that is invoked to select the error.
+        /// </param>
+        /// <returns>
+        ///     A new result containing either; the output of the <paramref>selector</paramref> function
+        ///     if this result is a failure, otherwise the original success.
+        /// </returns>
+        public static async Task<Result<TData>> SelectError<TData>(
+            this Task<Result<TData>> resultTask,
+            Func<Error, Error> selector)
+        {
+            Result<TData> result = await resultTask;
+            return result.SelectError(selector);
+        }
+
+        /// <summary>
+        ///     Projects a failed result's error from one type to another.
+        /// </summary>
+        /// <remarks>
+        ///     If this result is a success then this is a no-op.
+        /// </remarks>
+        /// <typeparam name="TData">
+        ///     The type of data encapsulated by the result.
+        /// </typeparam>
+        /// <param name="resultTask">
+        ///     The asynchronous result that this extension method is invoked on.
+        /// </param>
+        /// <param name="selector">
+        ///     The asynchronous function that is invoked to select the error.
+        /// </param>
+        /// <returns>
+        ///     A new result containing either; the output of the <paramref>selector</paramref> function
+        ///     if this result is a failure, otherwise the original success.
+        /// </returns>
+        public static async Task<Result<TData>> SelectError<TData>(
+            this Task<Result<TData>> resultTask,
+            Func<Error, Task<Error>> selector)
+        {
+            Result<TData> result = await resultTask;
+            return await result.SelectError(selector);
         }
 
         /// <summary>
         ///     Invokes another result generating function which takes as input the data of this result
-        ///     if it is successful after it has been awaited.
+        ///     if it is a success after it has been awaited.
         /// </summary>
         /// <remarks>
         ///     If this result is a failure then this is a no-op and the original failure is retained.
@@ -305,7 +523,7 @@ namespace Winton.DomainModelling
         ///     The asynchronous result that this extension method is invoked on.
         /// </param>
         /// <param name="onSuccess">
-        ///     The function that is invoked if this result represents a success.
+        ///     The function that is invoked if this result is a success.
         /// </param>
         /// <returns>
         ///     If this result is a success, then the result of <paramref>onSuccess</paramref> function;
@@ -321,7 +539,7 @@ namespace Winton.DomainModelling
 
         /// <summary>
         ///     Invokes another result generating function which takes as input the data of this result
-        ///     if it is successful after it has been awaited.
+        ///     if it is a success after it has been awaited.
         /// </summary>
         /// <remarks>
         ///     If this result is a failure then this is a no-op and the original failure is retained.
@@ -337,7 +555,7 @@ namespace Winton.DomainModelling
         ///     The asynchronous result that this extension method is invoked on.
         /// </param>
         /// <param name="onSuccess">
-        ///     The asynchronous function that is invoked if this result represents a success.
+        ///     The asynchronous function that is invoked if this result is a success.
         /// </param>
         /// <returns>
         ///     If this result is a success, then the result of <paramref>onSuccess</paramref> function;

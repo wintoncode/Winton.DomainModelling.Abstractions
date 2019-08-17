@@ -28,6 +28,18 @@ namespace Winton.DomainModelling
         public Error Error { get; }
 
         /// <inheritdoc />
+        public override Result<TData> Catch(Func<Error, Result<TData>> onFailure)
+        {
+            return onFailure(Error);
+        }
+
+        /// <inheritdoc />
+        public override Task<Result<TData>> Catch(Func<Error, Task<Result<TData>>> onFailure)
+        {
+            return onFailure(Error);
+        }
+
+        /// <inheritdoc />
         public override Result<TNewData> Combine<TOtherData, TNewData>(
             Result<TOtherData> other,
             Func<TData, TOtherData, TNewData> combineData,
@@ -42,6 +54,32 @@ namespace Winton.DomainModelling
         public override T Match<T>(Func<TData, T> onSuccess, Func<Error, T> onFailure)
         {
             return onFailure(Error);
+        }
+
+        /// <inheritdoc />
+        public override Result<TData> OnFailure(Action onFailure)
+        {
+            return OnFailure(_ => onFailure());
+        }
+
+        /// <inheritdoc />
+        public override Result<TData> OnFailure(Action<Error> onFailure)
+        {
+            onFailure(Error);
+            return this;
+        }
+
+        /// <inheritdoc />
+        public override Task<Result<TData>> OnFailure(Func<Task> onFailure)
+        {
+            return OnFailure(_ => onFailure());
+        }
+
+        /// <inheritdoc />
+        public override async Task<Result<TData>> OnFailure(Func<Error, Task> onFailure)
+        {
+            await onFailure(Error);
+            return this;
         }
 
         /// <inheritdoc />
@@ -69,15 +107,27 @@ namespace Winton.DomainModelling
         }
 
         /// <inheritdoc />
-        public override Result<TNewData> Select<TNewData>(Func<TData, TNewData> selectData)
+        public override Result<TNewData> Select<TNewData>(Func<TData, TNewData> selector)
         {
             return new Failure<TNewData>(Error);
         }
 
         /// <inheritdoc />
-        public override Task<Result<TNewData>> Select<TNewData>(Func<TData, Task<TNewData>> selectData)
+        public override Task<Result<TNewData>> Select<TNewData>(Func<TData, Task<TNewData>> selector)
         {
             return Task.FromResult<Result<TNewData>>(new Failure<TNewData>(Error));
+        }
+
+        /// <inheritdoc />
+        public override Result<TData> SelectError(Func<Error, Error> selector)
+        {
+            return new Failure<TData>(selector(Error));
+        }
+
+        /// <inheritdoc />
+        public override async Task<Result<TData>> SelectError(Func<Error, Task<Error>> selector)
+        {
+            return new Failure<TData>(await selector(Error));
         }
 
         /// <inheritdoc />
