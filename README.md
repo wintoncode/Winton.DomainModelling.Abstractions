@@ -41,7 +41,7 @@ public Person GetAdult(int id)
 ```
 
 This implementation has two major drawbacks:
-1) From a client's perspective, the API is not experessive enough. The method signature gives no indication that it might throw, so the client would need to peek inside to find that out.
+1) From a client's perspective, the API is not expressive enough. The method signature gives no indication that it might throw, so the client would need to peek inside to find that out.
 2) From an implementer's perspective, the error checking, whilst simple enough in this example, can often grow quite complex. This makes the implementation of the method hard to follow due to the number of conditional branches. We may try factoring out the condition checking blocks into separate methods to solve this problem. This would also allow us to share some of this logic with other parts of the code base. These factored-out methods would then have a signature like `void CheckPersonExists(Person person)`. Again, this signature tells us nothing about the fact that the method might throw an exception. Currently, the compiler is also not able to do the flow analysis necessary to determine that the `person` is not `null` after calling such a method and so we may be left with warnings in the original call site about possible null references, even though we know we've checked for that condition.
 
 These can both be resolved by using a `Result` type and re-writing the method like this:

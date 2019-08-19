@@ -55,6 +55,18 @@ namespace Winton.DomainModelling
         public TData Data { get; }
 
         /// <inheritdoc />
+        public override Result<TData> Catch(Func<Error, Result<TData>> onFailure)
+        {
+            return new Success<TData>(Data);
+        }
+
+        /// <inheritdoc />
+        public override Task<Result<TData>> Catch(Func<Error, Task<Result<TData>>> onFailure)
+        {
+            return Task.FromResult<Result<TData>>(new Success<TData>(Data));
+        }
+
+        /// <inheritdoc />
         public override Result<TNewData> Combine<TOtherData, TNewData>(
             Result<TOtherData> other,
             Func<TData, TOtherData, TNewData> combineData,
@@ -72,9 +84,33 @@ namespace Winton.DomainModelling
         }
 
         /// <inheritdoc />
+        public override Result<TData> OnFailure(Action onFailure)
+        {
+            return this;
+        }
+
+        /// <inheritdoc />
+        public override Result<TData> OnFailure(Action<Error> onFailure)
+        {
+            return this;
+        }
+
+        /// <inheritdoc />
+        public override Task<Result<TData>> OnFailure(Func<Task> onFailure)
+        {
+            return Task.FromResult<Result<TData>>(this);
+        }
+
+        /// <inheritdoc />
+        public override Task<Result<TData>> OnFailure(Func<Error, Task> onFailure)
+        {
+            return Task.FromResult<Result<TData>>(this);
+        }
+
+        /// <inheritdoc />
         public override Result<TData> OnSuccess(Action onSuccess)
         {
-            return OnSuccess(data => onSuccess());
+            return OnSuccess(_ => onSuccess());
         }
 
         /// <inheritdoc />
@@ -87,7 +123,7 @@ namespace Winton.DomainModelling
         /// <inheritdoc />
         public override async Task<Result<TData>> OnSuccess(Func<Task> onSuccess)
         {
-            return await OnSuccess(data => onSuccess());
+            return await OnSuccess(_ => onSuccess());
         }
 
         /// <inheritdoc />
@@ -98,16 +134,27 @@ namespace Winton.DomainModelling
         }
 
         /// <inheritdoc />
-        public override Result<TNewData> Select<TNewData>(Func<TData, TNewData> selectData)
+        public override Result<TNewData> Select<TNewData>(Func<TData, TNewData> selector)
         {
-            return new Success<TNewData>(selectData(Data));
+            return new Success<TNewData>(selector(Data));
         }
 
         /// <inheritdoc />
-        public override async Task<Result<TNewData>> Select<TNewData>(Func<TData, Task<TNewData>> selectData)
+        public override async Task<Result<TNewData>> Select<TNewData>(Func<TData, Task<TNewData>> selector)
         {
-            TNewData data = await selectData(Data);
-            return new Success<TNewData>(data);
+            return new Success<TNewData>(await selector(Data));
+        }
+
+        /// <inheritdoc />
+        public override Result<TData> SelectError(Func<Error, Error> selector)
+        {
+            return new Success<TData>(Data);
+        }
+
+        /// <inheritdoc />
+        public override Task<Result<TData>> SelectError(Func<Error, Task<Error>> selector)
+        {
+            return Task.FromResult<Result<TData>>(new Success<TData>(Data));
         }
 
         /// <inheritdoc />

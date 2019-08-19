@@ -9,6 +9,40 @@ namespace Winton.DomainModelling
 {
     public class SuccessTests
     {
+        public sealed class Catch : FailureTests
+        {
+            [Fact]
+            private void ShouldReturnOriginalSuccess()
+            {
+                Result<int> OnFailure(Error e)
+                {
+                    return new Failure<int>(new Error(e.Title, $"Ka-{e.Detail}"));
+                }
+
+                var success = new Success<int>(1);
+
+                Result<int> result = success.Catch(e => OnFailure(e));
+
+                result.Should().BeEquivalentTo(success);
+            }
+
+            [Fact]
+            private async Task ShouldReturnOriginalSuccessAsynchronously()
+            {
+                async Task<Result<int>> OnFailure(Error e)
+                {
+                    await Task.Yield();
+                    return new Failure<int>(new Error(e.Title, $"Ka-{e.Detail}"));
+                }
+
+                var success = new Success<int>(1);
+
+                Result<int> result = await success.Catch(e => OnFailure(e));
+
+                result.Should().BeEquivalentTo(success);
+            }
+        }
+
         public sealed class Combine : SuccessTests
         {
             [Fact]
@@ -49,6 +83,90 @@ namespace Winton.DomainModelling
                 bool matchedSuccess = success.Match(_ => true, _ => false);
 
                 matchedSuccess.Should().BeTrue();
+            }
+        }
+
+        public sealed class OnFailure : FailureTests
+        {
+            [Fact]
+            private void ShouldNotInvokeAction()
+            {
+                var invoked = false;
+                var success = new Success<int>(1);
+
+                success.OnFailure(() => invoked = true);
+
+                invoked.Should().BeFalse();
+            }
+
+            [Fact]
+            private void ShouldNotInvokeActionWithParameters()
+            {
+                var invoked = false;
+                var success = new Success<int>(1);
+
+                success.OnFailure(i => invoked = true);
+
+                invoked.Should().BeFalse();
+            }
+
+            [Fact]
+            private async Task ShouldNotInvokeAsyncAction()
+            {
+                var invoked = false;
+                async Task OnSuccess()
+                {
+                    await Task.Yield();
+                    invoked = true;
+                }
+
+                var success = new Success<int>(1);
+
+                await success.OnFailure(OnSuccess);
+
+                invoked.Should().BeFalse();
+            }
+
+            [Fact]
+            private async Task ShouldNotInvokeAsyncActionWithParameters()
+            {
+                var invoked = false;
+                async Task OnSuccess(Error e)
+                {
+                    await Task.Yield();
+                    invoked = true;
+                }
+
+                var success = new Success<int>(1);
+
+                await success.OnFailure(OnSuccess);
+
+                invoked.Should().BeFalse();
+            }
+
+            [Fact]
+            private void ShouldReturnOriginalResult()
+            {
+                var success = new Success<int>(1);
+
+                Result<int> result = success.OnFailure(() => { });
+
+                result.Should().BeSameAs(success);
+            }
+
+            [Fact]
+            private async Task ShouldReturnOriginalResultWhenAsyncAction()
+            {
+                async Task OnSuccess()
+                {
+                    await Task.Yield();
+                }
+
+                var failure = new Failure<int>(new Error("Error", "Boom!"));
+
+                Result<int> result = await failure.OnFailure(OnSuccess);
+
+                result.Should().BeSameAs(failure);
             }
         }
 
@@ -159,14 +277,43 @@ namespace Winton.DomainModelling
             }
         }
 
+        public sealed class SelectError : FailureTests
+        {
+            [Fact]
+            private void ShouldReturnOriginalSuccess()
+            {
+                var success = new Success<int>(1);
+
+                Result<int> result = success.SelectError(e => new NotFoundError(e.Detail));
+
+                result.Should().BeEquivalentTo(success);
+            }
+
+            [Fact]
+            private async Task ShouldReturnOriginalSuccessAsynchronously()
+            {
+                var success = new Success<int>(1);
+
+                Result<int> result = await success.SelectError(
+                    e => Task.FromResult<Error>(new NotFoundError(e.Detail)));
+
+                result.Should().BeEquivalentTo(success);
+            }
+        }
+
         public sealed class Then : SuccessTests
         {
             [Fact]
             private void ShouldInvokeOnSuccessFunc()
             {
+                Result<int> OnSuccess(int i)
+                {
+                    return new Success<int>(i + 1);
+                }
+
                 var success = new Success<int>(1);
 
-                Result<int> result = success.Then(i => new Success<int>(i + 1));
+                Result<int> result = success.Then(OnSuccess);
 
                 result.Should().BeEquivalentTo(new Success<int>(2));
             }
