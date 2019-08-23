@@ -98,3 +98,7 @@ Extends `Error` to indicate that an entity could not be found.
 ### `UnauthorizedError`
 
 Extends `Error` to indicate that the action being performed is not authorized.
+
+### `ConflictError`
+
+Extends `Error` to indicate the action cannot be completed due to the existence of a conflicting entity.
