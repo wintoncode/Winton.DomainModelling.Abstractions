@@ -33,7 +33,7 @@ namespace Winton.DomainModelling
         /// <param name="left">The first entity.</param>
         /// <param name="right">The second entity.</param>
         /// <returns><see langword="true" /> if the entities have the same ID; otherwise, <see langword="false" />.</returns>
-        public static bool operator ==(Entity<TEntityId> left, Entity<TEntityId> right)
+        public static bool operator ==(Entity<TEntityId>? left, Entity<TEntityId>? right)
         {
             return Equals(left, right);
         }
@@ -44,7 +44,7 @@ namespace Winton.DomainModelling
         /// <param name="left">The first entity.</param>
         /// <param name="right">The second entity.</param>
         /// <returns><see langword="true" /> if the entities have different IDs; otherwise, <see langword="false" />.</returns>
-        public static bool operator !=(Entity<TEntityId> left, Entity<TEntityId> right)
+        public static bool operator !=(Entity<TEntityId>? left, Entity<TEntityId>? right)
         {
             return !Equals(left, right);
         }
@@ -58,7 +58,7 @@ namespace Winton.DomainModelling
         ///     <see langword="true" /> if the current entity has the same ID as the <paramref name="other" /> entity;
         ///     otherwise, <see langword="false" />.
         /// </returns>
-        public bool Equals(Entity<TEntityId> other)
+        public bool Equals(Entity<TEntityId>? other)
         {
             if (other is null)
             {
@@ -75,7 +75,7 @@ namespace Winton.DomainModelling
                 return false;
             }
 
-            return !Id.Equals(default(TEntityId)) && !other.Id.Equals(default(TEntityId)) && Id.Equals(other.Id);
+            return !Id.Equals(default!) && !other.Id.Equals(default!) && Id.Equals(other.Id);
         }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace Winton.DomainModelling
         ///     <see langword="true" /> if the specified object is equal to the current object; otherwise,
         ///     <see langword="false" />.
         /// </returns>
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return Equals(obj as Entity<TEntityId>);
         }

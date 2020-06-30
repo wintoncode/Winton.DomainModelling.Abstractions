@@ -1,7 +1,7 @@
 # Winton.DomainModelling.Abstractions
 
-[![Build status](https://ci.appveyor.com/api/projects/status/7mba8m947ed603r1?svg=true)](https://ci.appveyor.com/project/wintoncode/winton-domainmodelling-abstractions/branch/master)
-[![Travis Build Status](https://travis-ci.org/wintoncode/Winton.DomainModelling.Abstractions.svg?branch=master)](https://travis-ci.org/wintoncode/Winton.DomainModelling.Abstractions)
+[![Appveyor](https://ci.appveyor.com/api/projects/status/7mba8m947ed603r1?svg=true)](https://ci.appveyor.com/project/wintoncode/winton-domainmodelling-abstractions/branch/master)
+[![Travis CI](https://travis-ci.com/wintoncode/Winton.DomainModelling.Abstractions.svg?branch=master)](https://travis-ci.com/wintoncode/Winton.DomainModelling.Abstractions)
 [![NuGet version](https://img.shields.io/nuget/v/Winton.DomainModelling.Abstractions.svg)](https://www.nuget.org/packages/Winton.DomainModelling.Abstractions)
 [![NuGet version](https://img.shields.io/nuget/vpre/Winton.DomainModelling.Abstractions.svg)](https://www.nuget.org/packages/Winton.DomainModelling.Abstractions)
 

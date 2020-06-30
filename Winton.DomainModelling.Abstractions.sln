@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27703.2026
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30128.74
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{859C9252-D63B-4ECB-9AB5-0BA8415C76AE}"
 	ProjectSection(SolutionItems) = preProject
@@ -9,16 +9,22 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.travis.yml = .travis.yml
 		appveyor.yml = appveyor.yml
 		CONTRIBUTING.md = CONTRIBUTING.md
+		Directory.Build.props = Directory.Build.props
 		GitVersion.yml = GitVersion.yml
 		icon.jpg = icon.jpg
 		LICENSE = LICENSE
 		README.md = README.md
+		Rules.ruleset = Rules.ruleset
 		stylecop.json = stylecop.json
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{697902B3-26B1-490D-BC64-39298D6DAFC4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{02075BDC-A66D-4346-8093-2F2667660F36}"
+	ProjectSection(SolutionItems) = preProject
+		test\Directory.Build.props = test\Directory.Build.props
+		test\Rules.ruleset = test\Rules.ruleset
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Winton.DomainModelling.Abstractions", "src\Winton.DomainModelling.Abstractions\Winton.DomainModelling.Abstractions.csproj", "{4CC49F58-367B-4E87-8925-49D913FA7BD1}"
 EndProject

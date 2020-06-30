@@ -1,45 +1,35 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Authors>Winton</Authors>
-    <Company>Winton</Company>
-    <Copyright>Copyright 2018 Winton</Copyright>
     <Description>Provides common abstractions for domain modelling.</Description>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <NoWarn>$(NoWarn);SA1101</NoWarn>
+    <IncludeSymbols>true</IncludeSymbols>
     <PackageId>Winton.DomainModelling.Abstractions</PackageId>
-    <PackageIconUrl>https://raw.githubusercontent.com/wintoncode/Winton.DomainModelling.Abstractions/master/icon.jpg</PackageIconUrl>
+    <PackageIcon>icon.jpg</PackageIcon>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/wintoncode/Winton.DomainModelling.Abstractions</PackageProjectUrl>
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
     <PackageTags>Winton, Domain, Driven, Design, Modelling, Abstractions, DDD</PackageTags>
-    <PackageVersion>$(NuGetVersion)</PackageVersion>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/wintoncode/Winton.DomainModelling.Abstractions</RepositoryUrl>
     <RootNamespace>Winton.DomainModelling</RootNamespace>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <TargetFramework>netstandard1.0</TargetFramework>
     <Title>Winton Domain Modelling Abstractions</Title>
-    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
-  </ItemGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
-    <AdditionalFiles Include="../../stylecop.json" />
+    <None Include="../../icon.jpg" Pack="true" PackagePath="" />
     <None Include="../../LICENSE" Pack="true" PackagePath=""/>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="StyleCop.Analyzers" Version="1.0.2" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
   </ItemGroup>
 
 </Project>
