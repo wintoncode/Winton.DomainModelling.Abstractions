@@ -13,8 +13,8 @@ namespace Winton.DomainModelling
             [Fact]
             private void ShouldBeFalseWhenIdHasDefaultValue()
             {
-                var entityA1 = new EntityA(default(int));
-                var entityA2 = new EntityA(default(int));
+                var entityA1 = new EntityA(default);
+                var entityA2 = new EntityA(default);
 
                 bool equal = entityA1.Equals(entityA2);
 
@@ -105,7 +105,7 @@ namespace Winton.DomainModelling
             {
                 var entityA1 = new EntityA(1);
 
-                bool equal = entityA1.Equals((object)null);
+                bool equal = entityA1.Equals((object?)null);
 
                 equal.Should().BeFalse();
             }

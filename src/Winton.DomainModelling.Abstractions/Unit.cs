@@ -16,7 +16,7 @@ namespace Winton.DomainModelling
         /// <summary>
         ///     Gets the default and only value of the <see cref="Unit" /> type.
         /// </summary>
-        public static Unit Value { get; } = default(Unit);
+        public static Unit Value { get; } = default;
 
         /// <summary>
         ///     Determines whether the first <cref see="Unit" /> is equal to the second <cref see="Unit" />.
