@@ -15,7 +15,7 @@
     <RepositoryUrl>https://github.com/wintoncode/Winton.DomainModelling.Abstractions</RepositoryUrl>
     <RootNamespace>Winton.DomainModelling</RootNamespace>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <Title>Winton Domain Modelling Abstractions</Title>
   </PropertyGroup>
 
