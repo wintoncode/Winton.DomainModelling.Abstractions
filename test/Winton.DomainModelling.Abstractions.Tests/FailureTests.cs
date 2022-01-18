@@ -5,328 +5,327 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Xunit;
 
-namespace Winton.DomainModelling
+namespace Winton.DomainModelling;
+
+public class FailureTests
 {
-    public class FailureTests
+    public sealed class Catch : FailureTests
     {
-        public sealed class Catch : FailureTests
+        [Fact]
+        private void ShouldInvokeOnFailureFunc()
         {
-            [Fact]
-            private void ShouldInvokeOnFailureFunc()
+            Result<int> OnFailure(Error e)
             {
-                Result<int> OnFailure(Error e)
-                {
-                    return new Failure<int>(new Error(e.Title, $"Ka-{e.Detail}"));
-                }
-
-                var failure = new Failure<int>(new Error("Error", "Boom!"));
-
-                Result<int> result = failure.Catch(e => OnFailure(e));
-
-                result.Should().BeEquivalentTo(new Failure<int>(new Error("Error", "Ka-Boom!")));
+                return new Failure<int>(new Error(e.Title, $"Ka-{e.Detail}"));
             }
 
-            [Fact]
-            private async Task ShouldInvokeOnFailureFuncAsynchronously()
-            {
-                async Task<Result<int>> OnFailure(Error e)
-                {
-                    await Task.Yield();
-                    return new Failure<int>(new Error(e.Title, $"Ka-{e.Detail}"));
-                }
+            var failure = new Failure<int>(new Error("Error", "Boom!"));
 
-                var failure = new Failure<int>(new Error("Error", "Boom!"));
+            Result<int> result = failure.Catch(e => OnFailure(e));
 
-                Result<int> result = await failure.Catch(async e => await OnFailure(e));
-
-                result.Should().BeEquivalentTo(new Failure<int>(new Error("Error", "Ka-Boom!")));
-            }
+            result.Should().BeEquivalentTo(new Failure<int>(new Error("Error", "Ka-Boom!")));
         }
 
-        public sealed class Combine : FailureTests
+        [Fact]
+        private async Task ShouldInvokeOnFailureFuncAsynchronously()
         {
-            [Fact]
-            private void ShouldCombineErrorsIfTheOtherResultIsAFailure()
+            async Task<Result<int>> OnFailure(Error e)
             {
-                var failure = new Failure<int>(new Error("Error", "Ka"));
-
-                Result<int> combined = failure.Combine(
-                    new Failure<int>(new Error("Error", "Boom!")),
-                    (i, j) => i + j,
-                    (error, otherError) => new Error("Error", $"{error.Detail}-{otherError.Detail}"));
-
-                combined.Should().BeEquivalentTo(new Failure<int>(new Error("Error", "Ka-Boom!")));
+                await Task.Yield();
+                return new Failure<int>(new Error(e.Title, $"Ka-{e.Detail}"));
             }
 
-            [Fact]
-            private void ShouldReturnFailureWithOriginalErrorIfOtherIsASuccess()
-            {
-                var failure = new Failure<int>(new Error("Error", "Ka"));
+            var failure = new Failure<int>(new Error("Error", "Boom!"));
 
-                Result<int> combined = failure.Combine(
-                    new Success<int>(2),
-                    (i, j) => i + j,
-                    (error, otherError) => new Error("Error", $"{error.Detail}-{otherError.Detail}"));
+            Result<int> result = await failure.Catch(async e => await OnFailure(e));
 
-                combined.Should().BeEquivalentTo(failure);
-            }
+            result.Should().BeEquivalentTo(new Failure<int>(new Error("Error", "Ka-Boom!")));
+        }
+    }
+
+    public sealed class Combine : FailureTests
+    {
+        [Fact]
+        private void ShouldCombineErrorsIfTheOtherResultIsAFailure()
+        {
+            var failure = new Failure<int>(new Error("Error", "Ka"));
+
+            Result<int> combined = failure.Combine(
+                new Failure<int>(new Error("Error", "Boom!")),
+                (i, j) => i + j,
+                (error, otherError) => new Error("Error", $"{error.Detail}-{otherError.Detail}"));
+
+            combined.Should().BeEquivalentTo(new Failure<int>(new Error("Error", "Ka-Boom!")));
         }
 
-        public sealed class Match : FailureTests
+        [Fact]
+        private void ShouldReturnFailureWithOriginalErrorIfOtherIsASuccess()
         {
-            [Fact]
-            private void ShouldInvokeOnFailureFunc()
-            {
-                var failure = new Failure<int>(new Error("Error", "Boom!"));
+            var failure = new Failure<int>(new Error("Error", "Ka"));
 
-                bool matchedFailure = failure.Match(_ => false, _ => true);
+            Result<int> combined = failure.Combine(
+                new Success<int>(2),
+                (i, j) => i + j,
+                (error, otherError) => new Error("Error", $"{error.Detail}-{otherError.Detail}"));
 
-                matchedFailure.Should().BeTrue();
-            }
+            combined.Should().BeEquivalentTo(failure);
+        }
+    }
+
+    public sealed class Match : FailureTests
+    {
+        [Fact]
+        private void ShouldInvokeOnFailureFunc()
+        {
+            var failure = new Failure<int>(new Error("Error", "Boom!"));
+
+            bool matchedFailure = failure.Match(_ => false, _ => true);
+
+            matchedFailure.Should().BeTrue();
+        }
+    }
+
+    public sealed class OnFailure : FailureTests
+    {
+        [Fact]
+        private void ShouldInvokeAction()
+        {
+            var invoked = false;
+            var failure = new Failure<int>(new Error("Error", "Boom!"));
+
+            failure.OnFailure(() => invoked = true);
+
+            invoked.Should().BeTrue();
         }
 
-        public sealed class OnFailure : FailureTests
+        [Fact]
+        private void ShouldNotInvokeActionWithParameters()
         {
-            [Fact]
-            private void ShouldInvokeAction()
-            {
-                var invoked = false;
-                var failure = new Failure<int>(new Error("Error", "Boom!"));
+            var invoked = false;
+            var failure = new Failure<int>(new Error("Error", "Boom!"));
 
-                failure.OnFailure(() => invoked = true);
+            failure.OnFailure(i => invoked = true);
 
-                invoked.Should().BeTrue();
-            }
-
-            [Fact]
-            private void ShouldNotInvokeActionWithParameters()
-            {
-                var invoked = false;
-                var failure = new Failure<int>(new Error("Error", "Boom!"));
-
-                failure.OnFailure(i => invoked = true);
-
-                invoked.Should().BeTrue();
-            }
-
-            [Fact]
-            private async Task ShouldNotInvokeAsyncAction()
-            {
-                var invoked = false;
-                async Task OnFailure()
-                {
-                    await Task.Yield();
-                    invoked = true;
-                }
-
-                var failure = new Failure<int>(new Error("Error", "Boom!"));
-
-                await failure.OnFailure(OnFailure);
-
-                invoked.Should().BeTrue();
-            }
-
-            [Fact]
-            private async Task ShouldNotInvokeAsyncActionWithParameters()
-            {
-                var invoked = false;
-                async Task OnFailure(Error e)
-                {
-                    await Task.Yield();
-                    invoked = true;
-                }
-
-                var failure = new Failure<int>(new Error("Error", "Boom!"));
-
-                await failure.OnFailure(OnFailure);
-
-                invoked.Should().BeTrue();
-            }
-
-            [Fact]
-            private void ShouldReturnOriginalResult()
-            {
-                var failure = new Failure<int>(new Error("Error", "Boom!"));
-
-                Result<int> result = failure.OnFailure(() => { });
-
-                result.Should().BeSameAs(failure);
-            }
-
-            [Fact]
-            private async Task ShouldReturnOriginalResultWhenAsyncAction()
-            {
-                async Task OnFailure()
-                {
-                    await Task.Yield();
-                }
-
-                var failure = new Failure<int>(new Error("Error", "Boom!"));
-
-                Result<int> result = await failure.OnFailure(OnFailure);
-
-                result.Should().BeSameAs(failure);
-            }
+            invoked.Should().BeTrue();
         }
 
-        public sealed class OnSuccess : FailureTests
+        [Fact]
+        private async Task ShouldNotInvokeAsyncAction()
         {
-            [Fact]
-            private void ShouldNotInvokeAction()
+            var invoked = false;
+            async Task OnFailure()
             {
-                var invoked = false;
-                var failure = new Failure<int>(new Error("Error", "Boom!"));
-
-                failure.OnSuccess(() => invoked = true);
-
-                invoked.Should().BeFalse();
+                await Task.Yield();
+                invoked = true;
             }
 
-            [Fact]
-            private void ShouldNotInvokeActionWithParameters()
-            {
-                var invoked = false;
-                var failure = new Failure<int>(new Error("Error", "Boom!"));
+            var failure = new Failure<int>(new Error("Error", "Boom!"));
 
-                failure.OnSuccess(i => invoked = true);
+            await failure.OnFailure(OnFailure);
 
-                invoked.Should().BeFalse();
-            }
-
-            [Fact]
-            private async Task ShouldNotInvokeAsyncAction()
-            {
-                var invoked = false;
-                async Task OnSuccess()
-                {
-                    await Task.Yield();
-                    invoked = true;
-                }
-
-                var failure = new Failure<int>(new Error("Error", "Boom!"));
-
-                await failure.OnSuccess(OnSuccess);
-
-                invoked.Should().BeFalse();
-            }
-
-            [Fact]
-            private async Task ShouldNotInvokeAsyncActionWithParameters()
-            {
-                var invoked = false;
-                async Task OnSuccess(int i)
-                {
-                    await Task.Yield();
-                    invoked = true;
-                }
-
-                var failure = new Failure<int>(new Error("Error", "Boom!"));
-
-                await failure.OnSuccess(OnSuccess);
-
-                invoked.Should().BeFalse();
-            }
-
-            [Fact]
-            private void ShouldReturnOriginalResult()
-            {
-                var failure = new Failure<int>(new Error("Error", "Boom!"));
-
-                Result<int> result = failure.OnSuccess(() => { });
-
-                result.Should().BeSameAs(failure);
-            }
-
-            [Fact]
-            private async Task ShouldReturnOriginalResultWhenAsyncAction()
-            {
-                async Task OnSuccess()
-                {
-                    await Task.Yield();
-                }
-
-                var failure = new Failure<int>(new Error("Error", "Boom!"));
-
-                Result<int> result = await failure.OnSuccess(OnSuccess);
-
-                result.Should().BeSameAs(failure);
-            }
+            invoked.Should().BeTrue();
         }
 
-        public sealed class Select : FailureTests
+        [Fact]
+        private async Task ShouldNotInvokeAsyncActionWithParameters()
         {
-            [Fact]
-            private void ShouldReturnOriginalFailure()
+            var invoked = false;
+            async Task OnFailure(Error e)
             {
-                var failure = new Failure<int>(new Error("Error", "Boom!"));
-
-                Result<string> result = failure.Select(i => $"{i}");
-
-                result.Should().BeEquivalentTo(failure);
+                await Task.Yield();
+                invoked = true;
             }
 
-            [Fact]
-            private async Task ShouldReturnOriginalFailureAsynchronously()
-            {
-                var failure = new Failure<int>(new Error("Error", "Boom!"));
+            var failure = new Failure<int>(new Error("Error", "Boom!"));
 
-                Result<string> result = await failure.Select(i => Task.FromResult($"{i}"));
+            await failure.OnFailure(OnFailure);
 
-                result.Should().BeEquivalentTo(failure);
-            }
+            invoked.Should().BeTrue();
         }
 
-        public sealed class SelectError : SuccessTests
+        [Fact]
+        private void ShouldReturnOriginalResult()
         {
-            [Fact]
-            private void ShouldProjectError()
-            {
-                var failure = new Failure<int>(new Error("Error", "Boom!"));
+            var failure = new Failure<int>(new Error("Error", "Boom!"));
 
-                Result<int> result = failure.SelectError(e => new NotFoundError(e.Detail));
+            Result<int> result = failure.OnFailure(() => { });
 
-                result.Should().BeEquivalentTo(new Failure<int>(new NotFoundError("Boom!")));
-            }
-
-            [Fact]
-            private async Task ShouldProjectErrorAsynchronously()
-            {
-                var failure = new Failure<int>(new Error("Error", "Boom!"));
-
-                Result<int> result = await failure.SelectError(
-                    e => Task.FromResult<Error>(new NotFoundError(e.Detail)));
-
-                result.Should().BeEquivalentTo(new Failure<int>(new NotFoundError("Boom!")));
-            }
+            result.Should().BeSameAs(failure);
         }
 
-        public sealed class Then : FailureTests
+        [Fact]
+        private async Task ShouldReturnOriginalResultWhenAsyncAction()
         {
-            [Fact]
-            private void ShouldReturnFailureWithOriginalError()
+            async Task OnFailure()
             {
-                var failure = new Failure<int>(new Error("Error", "Boom!"));
-
-                Result<int> result = failure.Then(i => new Success<int>(i + 1));
-
-                result.Should().BeEquivalentTo(failure);
+                await Task.Yield();
             }
 
-            [Fact]
-            private async Task ShouldReturnFailureWithOriginalErrorAsynchronously()
+            var failure = new Failure<int>(new Error("Error", "Boom!"));
+
+            Result<int> result = await failure.OnFailure(OnFailure);
+
+            result.Should().BeSameAs(failure);
+        }
+    }
+
+    public sealed class OnSuccess : FailureTests
+    {
+        [Fact]
+        private void ShouldNotInvokeAction()
+        {
+            var invoked = false;
+            var failure = new Failure<int>(new Error("Error", "Boom!"));
+
+            failure.OnSuccess(() => invoked = true);
+
+            invoked.Should().BeFalse();
+        }
+
+        [Fact]
+        private void ShouldNotInvokeActionWithParameters()
+        {
+            var invoked = false;
+            var failure = new Failure<int>(new Error("Error", "Boom!"));
+
+            failure.OnSuccess(i => invoked = true);
+
+            invoked.Should().BeFalse();
+        }
+
+        [Fact]
+        private async Task ShouldNotInvokeAsyncAction()
+        {
+            var invoked = false;
+            async Task OnSuccess()
             {
-                async Task<Result<int>> OnSuccess(int i)
-                {
-                    await Task.Yield();
-                    return new Success<int>(i + 1);
-                }
-
-                var failure = new Failure<int>(new Error("Error", "Boom!"));
-
-                Result<int> result = await failure.Then(OnSuccess);
-
-                result.Should().BeEquivalentTo(failure);
+                await Task.Yield();
+                invoked = true;
             }
+
+            var failure = new Failure<int>(new Error("Error", "Boom!"));
+
+            await failure.OnSuccess(OnSuccess);
+
+            invoked.Should().BeFalse();
+        }
+
+        [Fact]
+        private async Task ShouldNotInvokeAsyncActionWithParameters()
+        {
+            var invoked = false;
+            async Task OnSuccess(int i)
+            {
+                await Task.Yield();
+                invoked = true;
+            }
+
+            var failure = new Failure<int>(new Error("Error", "Boom!"));
+
+            await failure.OnSuccess(OnSuccess);
+
+            invoked.Should().BeFalse();
+        }
+
+        [Fact]
+        private void ShouldReturnOriginalResult()
+        {
+            var failure = new Failure<int>(new Error("Error", "Boom!"));
+
+            Result<int> result = failure.OnSuccess(() => { });
+
+            result.Should().BeSameAs(failure);
+        }
+
+        [Fact]
+        private async Task ShouldReturnOriginalResultWhenAsyncAction()
+        {
+            async Task OnSuccess()
+            {
+                await Task.Yield();
+            }
+
+            var failure = new Failure<int>(new Error("Error", "Boom!"));
+
+            Result<int> result = await failure.OnSuccess(OnSuccess);
+
+            result.Should().BeSameAs(failure);
+        }
+    }
+
+    public sealed class Select : FailureTests
+    {
+        [Fact]
+        private void ShouldReturnOriginalFailure()
+        {
+            var failure = new Failure<int>(new Error("Error", "Boom!"));
+
+            Result<string> result = failure.Select(i => $"{i}");
+
+            result.Should().BeEquivalentTo(failure);
+        }
+
+        [Fact]
+        private async Task ShouldReturnOriginalFailureAsynchronously()
+        {
+            var failure = new Failure<int>(new Error("Error", "Boom!"));
+
+            Result<string> result = await failure.Select(i => Task.FromResult($"{i}"));
+
+            result.Should().BeEquivalentTo(failure);
+        }
+    }
+
+    public sealed class SelectError : SuccessTests
+    {
+        [Fact]
+        private void ShouldProjectError()
+        {
+            var failure = new Failure<int>(new Error("Error", "Boom!"));
+
+            Result<int> result = failure.SelectError(e => new NotFoundError(e.Detail));
+
+            result.Should().BeEquivalentTo(new Failure<int>(new NotFoundError("Boom!")));
+        }
+
+        [Fact]
+        private async Task ShouldProjectErrorAsynchronously()
+        {
+            var failure = new Failure<int>(new Error("Error", "Boom!"));
+
+            Result<int> result = await failure.SelectError(
+                e => Task.FromResult<Error>(new NotFoundError(e.Detail)));
+
+            result.Should().BeEquivalentTo(new Failure<int>(new NotFoundError("Boom!")));
+        }
+    }
+
+    public sealed class Then : FailureTests
+    {
+        [Fact]
+        private void ShouldReturnFailureWithOriginalError()
+        {
+            var failure = new Failure<int>(new Error("Error", "Boom!"));
+
+            Result<int> result = failure.Then(i => new Success<int>(i + 1));
+
+            result.Should().BeEquivalentTo(failure);
+        }
+
+        [Fact]
+        private async Task ShouldReturnFailureWithOriginalErrorAsynchronously()
+        {
+            async Task<Result<int>> OnSuccess(int i)
+            {
+                await Task.Yield();
+                return new Success<int>(i + 1);
+            }
+
+            var failure = new Failure<int>(new Error("Error", "Boom!"));
+
+            Result<int> result = await failure.Then(OnSuccess);
+
+            result.Should().BeEquivalentTo(failure);
         }
     }
 }
